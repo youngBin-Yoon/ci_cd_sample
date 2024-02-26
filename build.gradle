@@ -1,37 +1,47 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.2.2'
-    id 'io.spring.dependency-management' version '1.1.4'
+	id 'org.springframework.boot' version '3.2.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE' // 이 버전은 Spring Boot 3.2.2와 호환됩니다.
+	id 'java'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-
-java {
-    sourceCompatibility = '17'
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
+sourceCompatibility = '17'
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// springfox-boot-starter 대신 springdoc-openapi-ui 사용
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6' // Spring Boot 3.2.2와 호환되는 버전
+
+	implementation 'ma.glasnost.orika:orika-core:1.5.4' // 최신 버전으로 업데이트
+
+	implementation files('lib/ojdbc6-11.2.0.3.jar') // 로컬 JAR 파일, 가능하다면 Maven Central이나 다른 저장소에서 관리하는 의존성 사용 고려
+
+	runtimeOnly 'com.h2database:h2' // H2 데이터베이스, 테스트 목적에 적합
+
+	compileOnly 'org.projectlombok:lombok'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'org.ow2.asm:asm:9.0' // ASM core API
+
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+test {
+	useJUnitPlatform()
 }

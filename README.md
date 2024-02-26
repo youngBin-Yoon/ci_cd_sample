@@ -1,2 +1,1 @@
-# ci_cd_sample
-ci cd 샘플
+# practice-ms-1-springboot-rest-jpa-aop-swagger-orcl-mongo

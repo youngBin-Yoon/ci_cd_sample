@@ -1,7 +1,7 @@
 FROM openjdk:17
 LABEL authors="code_maker"
 
-WORKDIR /var/lib/jenkins/workspace
+WORKDIR /var/jenkins_home/workspace
 
 ARG JAR_PATH=./build/libs
 

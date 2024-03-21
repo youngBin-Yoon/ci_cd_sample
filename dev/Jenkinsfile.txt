@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_REGISTRY_USERNAME = credentials('multiply0124')
+        DOCKER_REGISTRY_PASSWORD = credentials('multiply0124')
+    }
+    stages {
+        stage('========== Clone repository ==========') {
+            steps {
+                git credentialsId: 'ghkdeogh', url: 'https://github.com/multiply-co/travelover_admin_api.git'
+            }
+        }
+
+        stage('========== Build image ==========') {
+            steps {
+                script {
+                    app = docker.build("multiply0124/travelover-admin-api-dev", "-f dev/Dockerfile .")
+                }
+            }
+        }
+
+        stage('========== Push image ==========') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'multiply0124') {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
+                }
+            }
+        }
+
+        stage('========== Pull image and Deploy ==========') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'multiply0124', usernameVariable: 'DOCKER_REGISTRY_USERNAME', passwordVariable: 'DOCKER_REGISTRY_PASSWORD')]) {
+                        sshPublisher(
+                            continueOnError: false, failOnError: true,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "remote_server",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(
+                                            execCommand: """
+                                                cd docker/admin_api-dev
+                                                docker image prune -f
+                                                echo '${DOCKER_REGISTRY_PASSWORD}' | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin
+                                                docker-compose pull
+                                                docker-compose down
+                                                docker-compose up -d
+                                            """
+                                        )
+                                    ])
+                            ])
+                    }
+                }
+            }
+        }
+    }
+}

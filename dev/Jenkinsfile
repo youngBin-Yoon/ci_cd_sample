@@ -7,14 +7,14 @@ pipeline {
     stages {
         stage('========== Clone repository ==========') {
             steps {
-                git credentialsId: 'ghkdeogh', url: 'https://github.com/multiply-co/travelover_admin_api.git'
+                git credentialsId: 'm-ultiply', url: 'https://github.com/youngBin-Yoon/ci_cd_sample.git'
             }
         }
 
         stage('========== Build image ==========') {
             steps {
                 script {
-                    app = docker.build("multiply0124/travelover-admin-api-dev", "-f dev/Dockerfile .")
+                    app = docker.build("multiply0124/ci_cd_sample", "-f dev/Dockerfile .")
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'multiply0124') {
-                        app.push("${env.BUILD_NUMBER}")
+                        app.push(1000+"${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
                 }

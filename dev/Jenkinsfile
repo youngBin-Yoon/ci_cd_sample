@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'multiply0124') {
-                        app.push(1000+"${env.BUILD_NUMBER}")
+                        app.push(1000)
                         app.push("latest")
                     }
                 }
